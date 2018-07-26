@@ -14,8 +14,9 @@ library(dplyr)
 
 This document is a collection of exploration and visualization of NBA player's advanced stats in 2018.
 
-```{r basic stats}
-data = NBAPerGameAdvStatistics(season=2018)
+```{r load stats}
+basic_stat = NBAPerGameStatistics(season=2018)
+adv_stat = NBAPerGameAdvStatistics(season=2018)
 ```
 
 ## Comparison of the rebounding efficiency
@@ -23,9 +24,24 @@ data = NBAPerGameAdvStatistics(season=2018)
 
 
 ```{r rebounds, echo=FALSE}
-
-ggplot(data %>% filter(mp>48), aes(orbpercent, drbpercent)) +
+ggplot(adv_stat %>% filter(mp>48), aes(orbpercent, drbpercent)) +
   geom_point(aes(color=mp)) +
   geom_label(aes(label=player, color=mp), size=2)
 ```
 
+```{r reboundsper team, echo=FALSE, fig.height = 60, fig.width = 8}
+ggplot(adv_stat %>% filter(mp>48), aes(orbpercent, drbpercent)) +
+  geom_label(aes(label=player, color=mp), size=2) +
+  geom_point(aes(color=mp)) +
+  facet_wrap( ~ tm, ncol=2)
+```
+
+
+
+## 3pt shooting, free throw and 3pt shooting
+```{r shooting percentage, echo=FALSE}
+ggplot(basic_stat %>% filter(mp>10, x3pa>=2, g>20), aes(x3ppercent, x2ppercent)) +
+  geom_label(aes(label=player, color=ftpercent), size=2) +
+  geom_point(aes(color=ftpercent)) +
+  geom_abline()
+```
